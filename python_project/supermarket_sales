@@ -1,0 +1,153 @@
+import pandas as pd
+df = pd.read_csv("/content/SuperMarket Analysis.csv")
+df.head()
+
+# Last 5 rows
+print(df.tail())
+
+# Dataset shape
+print("Dataset Shape:", df.shape)
+
+# Dataset information
+df.info()
+
+# Statistical description
+print(df.describe())
+
+# Check missing values
+print(df.isnull().sum())
+
+# Check duplicate rows
+print("Duplicate Rows:", df.duplicated().sum())
+
+#Question 1 – Count transactions by branch and product line
+transactions = df.groupby(
+    ['Branch', 'Product line']
+).size().reset_index(name='Transaction Count')
+
+print(transactions)
+
+# Question 2 - Calculate total and average sales
+
+total_sales = df['Sales'].sum()
+average_sales = df['Sales'].mean()
+
+print("Total Sales:", total_sales)
+print("Average Sales:", average_sales)
+
+#Question 3 – Which product line has the highest average total?
+# Question 3
+
+product_sales = df.groupby('Product line')['Sales'].mean()
+
+print(product_sales)
+
+print("Highest Average Sales:")
+print(product_sales.idxmax())
+
+print("Average Sales:", product_sales.max())
+
+#Question 4 – Count transactions by payment method and customer type
+payment_customer = pd.crosstab(
+    df['Payment'],
+    df['Customer type']
+)
+
+print(payment_customer)
+
+#Question 5 – Find average customer rating by branch
+branch_rating = df.groupby('Branch')['Rating'].mean()
+
+print("Average Customer Rating by Branch:")
+print(branch_rating)
+
+#Question 6 – List the 10 highest-value transactions
+top_10 = df.sort_values(
+    by='Sales',
+    ascending=False
+).head(10)
+
+print(top_10)
+
+#Question 7 – Check missing values and duplicates
+print("Missing Values:")
+print(df.isnull().sum())
+
+print("\nDuplicate Rows:")
+print(df.duplicated().sum())
+
+# Remove duplicates
+df = df.drop_duplicates()
+
+# Remove missing values
+df = df.dropna()
+
+print("\nDataset after cleaning:")
+print(df.shape)
+
+# Convert Sales column into NumPy array
+import numpy as np
+
+# Convert Sales column into NumPy array
+sales_array = np.array(df['Sales'])
+
+print("Sales Array:")
+print(sales_array)
+
+# NumPy calculations
+print("Total Sales:", np.sum(sales_array))
+print("Average Sales:", np.mean(sales_array))
+print("Maximum Sale:", np.max(sales_array))
+print("Minimum Sale:", np.min(sales_array))
+print("Standard Deviation:", np.std(sales_array))
+
+# Product line bar chart
+import matplotlib.pyplot as plt
+
+# Product line bar chart
+product_line_sales = df.groupby('Product line')['Sales'].sum()
+
+plt.figure(figsize=(10, 5))
+
+product_line_sales.plot(kind='bar')
+
+plt.title('Total Sales by Product Line')
+plt.xlabel('Product Line')
+plt.ylabel('Total Sales')
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Total sales histogram
+
+plt.figure(figsize=(8, 5))
+
+plt.hist(df['Sales'], bins=20, edgecolor='black')
+
+plt.title('Distribution of Total Sales')
+plt.xlabel('Sales')
+plt.ylabel('Frequency')
+
+plt.tight_layout()
+plt.show()
+
+# Observation 1
+best_product = df.groupby('Product line')['Sales'].sum().idxmax()
+
+print("Observation 1:")
+print(best_product, "has the highest total sales.")
+
+# Observation 2
+best_branch = df.groupby('Branch')['Sales'].sum().idxmax()
+
+print("\nObservation 2:")
+print(best_branch, "branch has the highest total sales.")
+
+# Observation 3
+best_payment = df['Payment'].value_counts().idxmax()
+
+print("\nObservation 3:")
+print(best_payment, "is the most frequently used payment method.")
+
+
